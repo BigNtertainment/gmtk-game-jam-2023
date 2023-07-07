@@ -15,6 +15,7 @@ impl Plugin for LoadingPlugin {
         )
         .add_collection_to_loading_state::<_, FontAssets>(GameState::Loading)
         .add_collection_to_loading_state::<_, AudioAssets>(GameState::Loading)
+        .add_collection_to_loading_state::<_, ModelAssets>(GameState::Loading)
         .add_collection_to_loading_state::<_, TextureAssets>(GameState::Loading);
     }
 }
@@ -38,4 +39,10 @@ pub struct AudioAssets {
 pub struct TextureAssets {
     #[asset(path = "textures/bevy.png")]
     pub texture_bevy: Handle<Image>,
+}
+
+#[derive(AssetCollection, Resource)]
+pub struct ModelAssets {
+    #[asset(path = "models/golfball.glb#Scene0")]
+    pub golfball: Handle<Scene>,
 }
