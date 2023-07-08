@@ -1,4 +1,5 @@
 use crate::loading::FontAssets;
+use crate::util::cleanup;
 use crate::GameState;
 use bevy::prelude::*;
 
@@ -11,7 +12,7 @@ impl Plugin for MenuPlugin {
         app.init_resource::<ButtonColors>()
             .add_system(setup_menu.in_schedule(OnEnter(GameState::Menu)))
             .add_system(click_play_button.in_set(OnUpdate(GameState::Menu)))
-            .add_system(cleanup_menu.in_schedule(OnExit(GameState::Menu)));
+            .add_systems((cleanup_menu, cleanup::<Camera2d>).in_schedule(OnExit(GameState::Menu)));
     }
 }
 
@@ -35,10 +36,7 @@ fn setup_menu(
     font_assets: Res<FontAssets>,
     button_colors: Res<ButtonColors>,
 ) {
-    commands.spawn(Camera3dBundle {
-        transform: Transform::from_xyz(20., 6., 7.).looking_at(Vec3::new(0., 0., 0.), Vec3::Y),
-        ..default()
-    });
+    commands.spawn(Camera2dBundle::default());
     commands
         .spawn(ButtonBundle {
             style: Style {

@@ -1,14 +1,14 @@
 mod actions;
-mod audio;
 mod ball;
+mod camera;
 mod level;
 mod light;
 mod loading;
 mod loading_screen;
 mod menu;
+mod util;
 
 use crate::actions::ActionsPlugin;
-use crate::audio::InternalAudioPlugin;
 use crate::loading::LoadingPlugin;
 use crate::menu::MenuPlugin;
 
@@ -18,10 +18,12 @@ use bevy::app::App;
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
+use bevy_kira_audio::AudioPlugin;
 use bevy_rapier3d::{
     prelude::{NoUserData, RapierPhysicsPlugin},
     render::RapierDebugRenderPlugin,
 };
+use camera::CameraPlugin;
 use level::LevelPlugin;
 use light::LightPlugin;
 use loading_screen::LoadingScreenPlugin;
@@ -50,9 +52,10 @@ impl Plugin for GamePlugin {
             .add_plugin(ActionsPlugin)
             .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             .add_plugin(LevelPlugin)
+            .add_plugin(CameraPlugin)
+            .add_plugin(AudioPlugin)
             .add_plugin(LightPlugin)
             .add_plugin(MenuPlugin)
-            .add_plugin(InternalAudioPlugin)
             .add_plugin(BallPlugin);
 
         #[cfg(debug_assertions)]
