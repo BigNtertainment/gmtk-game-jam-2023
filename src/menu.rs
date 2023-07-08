@@ -1,6 +1,6 @@
 use crate::loading::FontAssets;
-use crate::GameState;
 use crate::util::cleanup;
+use crate::GameState;
 use bevy::prelude::*;
 
 pub struct MenuPlugin;

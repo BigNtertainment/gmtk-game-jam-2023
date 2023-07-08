@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_rapier3d::prelude::{Collider, ComputedColliderShape, RigidBody};
+use bevy_rapier3d::prelude::{Collider, ComputedColliderShape};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
 use crate::{ball::BallBundle, loading::ModelAssets, GameState};
