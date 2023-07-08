@@ -4,6 +4,7 @@ mod ball;
 mod level;
 mod light;
 mod loading;
+mod loading_screen;
 mod menu;
 
 use crate::actions::ActionsPlugin;
@@ -17,9 +18,13 @@ use bevy::app::App;
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use bevy_rapier3d::{render::RapierDebugRenderPlugin, prelude::{RapierPhysicsPlugin, NoUserData}};
+use bevy_rapier3d::{
+    prelude::{NoUserData, RapierPhysicsPlugin},
+    render::RapierDebugRenderPlugin,
+};
 use level::LevelPlugin;
 use light::LightPlugin;
+use loading_screen::LoadingScreenPlugin;
 
 // This example game uses States to separate logic
 // See https://bevy-cheatbook.github.io/programming/states.html
@@ -41,6 +46,7 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_state::<GameState>()
             .add_plugin(LoadingPlugin)
+            .add_plugin(LoadingScreenPlugin)
             .add_plugin(ActionsPlugin)
             .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             .add_plugin(LevelPlugin)
