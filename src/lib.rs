@@ -4,6 +4,7 @@ mod camera;
 mod level;
 mod light;
 mod loading;
+mod loading_screen;
 mod menu;
 mod util;
 
@@ -25,6 +26,7 @@ use bevy_rapier3d::{
 use camera::CameraPlugin;
 use level::LevelPlugin;
 use light::LightPlugin;
+use loading_screen::LoadingScreenPlugin;
 
 // This example game uses States to separate logic
 // See https://bevy-cheatbook.github.io/programming/states.html
@@ -46,6 +48,7 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_state::<GameState>()
             .add_plugin(LoadingPlugin)
+            .add_plugin(LoadingScreenPlugin)
             .add_plugin(ActionsPlugin)
             .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             .add_plugin(LevelPlugin)
