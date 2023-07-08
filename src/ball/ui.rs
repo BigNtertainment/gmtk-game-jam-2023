@@ -10,6 +10,7 @@ pub struct BallUiPlugin;
 impl Plugin for BallUiPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<BallUi>()
+            .register_type::<BallUiBar>()
             .add_system(setup_ball_ui.in_schedule(OnEnter(GameState::Playing)))
             .add_system(update_ball_ui.in_set(OnUpdate(GameState::Playing)))
             .add_system(cleanup::<BallUi>.in_schedule(OnEnter(GameState::Playing)));

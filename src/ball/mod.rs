@@ -36,7 +36,9 @@ pub struct BallBundle {
 impl Default for BallBundle {
     fn default() -> Self {
         Self {
-            ball: Ball { energy: MAX_BALL_ENERGY },
+            ball: Ball {
+                energy: MAX_BALL_ENERGY,
+            },
             rigidbody: RigidBody::Dynamic,
             velocity: Velocity {
                 linvel: Vec3::new(0., 0., 0.),
@@ -61,7 +63,8 @@ fn ball_movement(
                 continue;
             }
 
-            let impulse = movement_vector * time.delta_seconds() * 100.0 * (ball.energy / MAX_BALL_ENERGY);
+            let impulse =
+                movement_vector * time.delta_seconds() * 100.0 * (ball.energy / MAX_BALL_ENERGY);
 
             commands.entity(entity).insert(ExternalImpulse {
                 impulse,

@@ -17,7 +17,10 @@ use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_kira_audio::AudioPlugin;
-use bevy_rapier3d::{render::RapierDebugRenderPlugin, prelude::{RapierPhysicsPlugin, NoUserData}};
+use bevy_rapier3d::{
+    prelude::{NoUserData, RapierPhysicsPlugin},
+    render::RapierDebugRenderPlugin,
+};
 use level::LevelPlugin;
 use light::LightPlugin;
 
