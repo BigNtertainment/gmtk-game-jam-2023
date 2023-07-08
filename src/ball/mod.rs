@@ -29,7 +29,7 @@ pub struct Ball {
 pub struct BallBundle {
     pub ball: Ball,
     pub rigidbody: RigidBody,
-    pub ccd: Ccd,
+    pub active_events: ActiveEvents,
     pub velocity: Velocity,
     pub collider: Collider,
 }
@@ -41,7 +41,7 @@ impl Default for BallBundle {
                 energy: MAX_BALL_ENERGY,
             },
             rigidbody: RigidBody::Dynamic,
-            ccd: Ccd::enabled(),
+            active_events: ActiveEvents::COLLISION_EVENTS,
             velocity: Velocity {
                 linvel: Vec3::new(0., 0., 0.),
                 angvel: Vec3::new(0., 0., 0.),

@@ -1,6 +1,7 @@
 mod actions;
 mod ball;
 mod camera;
+mod hole;
 mod level;
 mod light;
 mod loading;
@@ -24,6 +25,7 @@ use bevy_rapier3d::{
     render::RapierDebugRenderPlugin,
 };
 use camera::CameraPlugin;
+use hole::HolePlugin;
 use level::LevelPlugin;
 use light::LightPlugin;
 use loading_screen::LoadingScreenPlugin;
@@ -56,7 +58,8 @@ impl Plugin for GamePlugin {
             .add_plugin(AudioPlugin)
             .add_plugin(LightPlugin)
             .add_plugin(MenuPlugin)
-            .add_plugin(BallPlugin);
+            .add_plugin(BallPlugin)
+            .add_plugin(HolePlugin);
 
         #[cfg(debug_assertions)]
         {

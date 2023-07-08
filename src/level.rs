@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::{Collider, ComputedColliderShape};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
-use crate::{ball::BallBundle, loading::ModelAssets, GameState};
+use crate::{ball::BallBundle, hole::Hole, loading::ModelAssets, GameState};
 
 pub struct LevelPlugin;
 
@@ -31,6 +31,9 @@ fn load_level(mut commands: Commands, models: Res<ModelAssets>) {
                 match entity.get::<Name>().map(|name| name.as_str()) {
                     Some("ball") => {
                         commands.insert(BallBundle::default());
+                    }
+                    Some("hole") => {
+                        commands.insert(Hole);
                     }
                     _ => {
                         let mesh = entity.get::<Handle<Mesh>>();
