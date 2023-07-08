@@ -5,7 +5,7 @@ use crate::{actions::Actions, GameState};
 
 use self::ui::BallUiPlugin;
 
-const MAX_BALL_ENERGY: f32 = 1000.;
+const MAX_BALL_ENERGY: f32 = 100.;
 
 mod ui;
 
@@ -29,6 +29,7 @@ pub struct Ball {
 pub struct BallBundle {
     pub ball: Ball,
     pub rigidbody: RigidBody,
+    pub ccd: Ccd,
     pub velocity: Velocity,
     pub collider: Collider,
 }
@@ -40,6 +41,7 @@ impl Default for BallBundle {
                 energy: MAX_BALL_ENERGY,
             },
             rigidbody: RigidBody::Dynamic,
+            ccd: Ccd::enabled(),
             velocity: Velocity {
                 linvel: Vec3::new(0., 0., 0.),
                 angvel: Vec3::new(0., 0., 0.),
@@ -52,11 +54,17 @@ impl Default for BallBundle {
 fn ball_movement(
     mut commands: Commands,
     mut ball_query: Query<(Entity, &mut Ball)>,
+    camera_query: Query<&Transform, With<Camera>>,
     actions: Res<Actions>,
     time: Res<Time>,
 ) {
     if let Some(movement_vector) = actions.player_movement {
-        let movement_vector = Vec3::new(movement_vector.x, 0., movement_vector.y);
+        let camera_transform = camera_query.single();
+
+        let forward = (camera_transform.forward() * Vec3::new(1., 0., 1.)).normalize();
+        let right = (camera_transform.right() * Vec3::new(1., 0., 1.)).normalize();
+
+        let movement_vector = (right * movement_vector.x + forward * movement_vector.y).normalize();
 
         for (entity, mut ball) in ball_query.iter_mut() {
             if ball.energy <= 0.0 {
@@ -64,7 +72,7 @@ fn ball_movement(
             }
 
             let impulse =
-                movement_vector * time.delta_seconds() * 100.0 * (ball.energy / MAX_BALL_ENERGY);
+                movement_vector * time.delta_seconds() * 10. * (ball.energy / MAX_BALL_ENERGY);
 
             commands.entity(entity).insert(ExternalImpulse {
                 impulse,

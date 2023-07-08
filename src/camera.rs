@@ -28,7 +28,7 @@ fn setup_camera(mut commands: Commands) {
             transform: Transform::from_xyz(25., 7., 0.).looking_at(Vec3::ZERO, Vec3::Y),
             ..default()
         })
-        .insert(CameraControls { radius: 32. });
+        .insert(CameraControls { radius: 27. });
 }
 
 fn lock_cursor(mut windows: Query<&mut Window>) {
@@ -70,7 +70,7 @@ fn look_angles(
             false,
             QueryFilter::new().exclude_collider(ball),
         ) {
-            let hit_point = target.translation + ray_direction * toi;
+            let hit_point = target.translation + ray_direction * (toi - 2.);
 
             hit_point
         } else {
