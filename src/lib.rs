@@ -1,5 +1,6 @@
 mod actions;
 mod ball;
+mod camera;
 mod level;
 mod light;
 mod loading;
@@ -21,6 +22,7 @@ use bevy_rapier3d::{
     prelude::{NoUserData, RapierPhysicsPlugin},
     render::RapierDebugRenderPlugin,
 };
+use camera::CameraPlugin;
 use level::LevelPlugin;
 use light::LightPlugin;
 
@@ -47,6 +49,7 @@ impl Plugin for GamePlugin {
             .add_plugin(ActionsPlugin)
             .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             .add_plugin(LevelPlugin)
+            .add_plugin(CameraPlugin)
             .add_plugin(AudioPlugin)
             .add_plugin(LightPlugin)
             .add_plugin(MenuPlugin)
