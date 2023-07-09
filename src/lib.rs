@@ -8,6 +8,7 @@ mod light;
 mod loading;
 mod loading_screen;
 mod menu;
+mod reset;
 mod soundtrack;
 mod trampoline;
 mod util;
@@ -33,6 +34,7 @@ use hole::HolePlugin;
 use level::LevelPlugin;
 use light::LightPlugin;
 use loading_screen::LoadingScreenPlugin;
+use reset::ResetPlugin;
 use soundtrack::SoundtrackPlugin;
 use trampoline::TrampolinePlugin;
 
@@ -63,10 +65,11 @@ impl Plugin for GamePlugin {
             .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
             .add_plugin(LevelPlugin)
             .add_plugin(CameraPlugin)
-            .add_plugin(AudioPlugin)
             .add_plugin(LightPlugin)
+            .add_plugin(AudioPlugin)
             .add_plugin(SoundtrackPlugin)
             .add_plugin(MenuPlugin)
+            .add_plugin(ResetPlugin)
             .add_plugin(BallPlugin)
             .add_plugin(HolePlugin)
             .add_plugin(BoosterPlugin)

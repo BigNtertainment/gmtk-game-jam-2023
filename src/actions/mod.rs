@@ -13,7 +13,8 @@ pub struct ActionsPlugin;
 impl Plugin for ActionsPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Actions>()
-            .add_system(set_movement_actions.in_set(OnUpdate(GameState::Playing)));
+            .add_event::<BurstActions>()
+            .add_systems((set_movement_actions, set_burst_actions).in_set(OnUpdate(GameState::Playing)));
     }
 }
 
@@ -21,6 +22,11 @@ impl Plugin for ActionsPlugin {
 pub struct Actions {
     pub player_movement: Option<Vec2>,
     pub camera_movement: Option<Vec2>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum BurstActions {
+    Reset
 }
 
 pub fn set_movement_actions(
@@ -53,5 +59,14 @@ pub fn set_movement_actions(
 
             camera_movement
         });
+    }
+}
+
+fn set_burst_actions(
+    keyboard_input: Res<Input<KeyCode>>,
+    mut burst_actions: EventWriter<BurstActions>,
+) {
+    if GameControl::pressed(&GameControl::Reset, &keyboard_input) {
+        burst_actions.send(BurstActions::Reset);
     }
 }
