@@ -16,7 +16,9 @@ impl Plugin for CameraPlugin {
                     .chain()
                     .in_set(OnUpdate(GameState::Playing)),
             )
-            .add_systems((cleanup::<Camera>, unlock_cursor).in_schedule(OnExit(GameState::Playing)));
+            .add_systems(
+                (cleanup::<Camera>, unlock_cursor).in_schedule(OnExit(GameState::Playing)),
+            );
     }
 }
 

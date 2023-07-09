@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 
-use crate::{actions::Actions, GameState, hole::Won};
+use crate::{actions::Actions, hole::Won, GameState};
 
 use self::ui::BallUiPlugin;
 
@@ -15,7 +15,9 @@ impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Ball>()
             .add_plugin(BallUiPlugin)
-            .add_systems((ball_movement, lose_velocity, lose_condition).in_set(OnUpdate(GameState::Playing)));
+            .add_systems(
+                (ball_movement, lose_velocity, lose_condition).in_set(OnUpdate(GameState::Playing)),
+            );
     }
 }
 
@@ -73,8 +75,7 @@ fn ball_movement(
                 continue;
             }
 
-            let impulse =
-                movement_vector * time.delta_seconds() * 10.;
+            let impulse = movement_vector * time.delta_seconds() * 10.;
 
             commands.entity(entity).insert(ExternalImpulse {
                 impulse,
@@ -94,13 +95,19 @@ fn lose_velocity(mut query: Query<&mut Velocity, With<Ball>>, time: Res<Time>) {
     }
 }
 
-fn lose_condition(query: Query<(&Ball, &Velocity, &Transform)>, won: Res<Won>, mut state: ResMut<NextState<GameState>>) {
+fn lose_condition(
+    query: Query<(&Ball, &Velocity, &Transform)>,
+    won: Res<Won>,
+    mut state: ResMut<NextState<GameState>>,
+) {
     if won.0 {
         return;
     }
 
     if let Ok((ball, velocity, transform)) = query.get_single() {
-        if transform.translation.y <= -10. || (ball.energy <= 0. && velocity.linvel.length() <= 0.05) {
+        if transform.translation.y <= -10.
+            || (ball.energy <= 0. && velocity.linvel.length() <= 0.05)
+        {
             state.set(GameState::LoadLevel);
         }
     }
