@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_rapier3d::prelude::{Collider, ComputedColliderShape};
+use bevy_rapier3d::prelude::{Collider, ComputedColliderShape, Friction};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
 use crate::{ball::BallBundle, hole::Hole, loading::ModelAssets, GameState};
@@ -43,7 +43,7 @@ fn load_level(mut commands: Commands, models: Res<ModelAssets>) {
                             commands.insert(UpdateCollider {
                                 mesh: mesh.clone(),
                                 parent: parent.unwrap().get(),
-                            });
+                            }).insert(Friction::new(1.));
                         }
                     }
                 }

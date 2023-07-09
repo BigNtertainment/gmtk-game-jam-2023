@@ -5,7 +5,7 @@ use crate::{actions::Actions, GameState};
 
 use self::ui::BallUiPlugin;
 
-const MAX_BALL_ENERGY: f32 = 100.;
+const MAX_BALL_ENERGY: f32 = 50.;
 
 mod ui;
 
@@ -15,7 +15,7 @@ impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Ball>()
             .add_plugin(BallUiPlugin)
-            .add_system(ball_movement.in_set(OnUpdate(GameState::Playing)));
+            .add_systems((ball_movement, lose_velocity, lose_condition).in_set(OnUpdate(GameState::Playing)));
     }
 }
 
@@ -31,6 +31,7 @@ pub struct BallBundle {
     pub rigidbody: RigidBody,
     pub active_events: ActiveEvents,
     pub velocity: Velocity,
+    pub friction: Friction,
     pub collider: Collider,
 }
 
@@ -46,6 +47,7 @@ impl Default for BallBundle {
                 linvel: Vec3::new(0., 0., 0.),
                 angvel: Vec3::new(0., 0., 0.),
             },
+            friction: Friction::new(1.),
             collider: Collider::ball(1.),
         }
     }
@@ -72,7 +74,7 @@ fn ball_movement(
             }
 
             let impulse =
-                movement_vector * time.delta_seconds() * 10. * (ball.energy / MAX_BALL_ENERGY);
+                movement_vector * time.delta_seconds() * 10.;
 
             commands.entity(entity).insert(ExternalImpulse {
                 impulse,
@@ -80,6 +82,22 @@ fn ball_movement(
             });
 
             ball.energy -= impulse.length();
+        }
+    }
+}
+
+fn lose_velocity(mut query: Query<&mut Velocity, With<Ball>>, time: Res<Time>) {
+    if let Ok(mut velocity) = query.get_single_mut() {
+        let deacceleration = 0.5 * time.delta_seconds();
+
+        velocity.linvel *= (1. - deacceleration).max(0.);
+    }
+}
+
+fn lose_condition(query: Query<(&Ball, &Velocity, &Transform)>) {
+    if let Ok((ball, velocity, transform)) = query.get_single() {
+        if transform.translation.y <= -10. || (ball.energy <= 0. && velocity.linvel.length() <= 0.01) {
+            println!("you lose!");
         }
     }
 }
