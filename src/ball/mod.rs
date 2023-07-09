@@ -1,7 +1,9 @@
 use bevy::prelude::*;
+use bevy_kira_audio::{Audio, AudioControl};
 use bevy_rapier3d::prelude::*;
+use rand::Rng;
 
-use crate::{actions::Actions, hole::Won, GameState};
+use crate::{actions::Actions, hole::Won, loading::AudioAssets, GameState};
 
 use self::ui::BallUiPlugin;
 
@@ -16,7 +18,7 @@ impl Plugin for BallPlugin {
         app.register_type::<Ball>()
             .add_plugin(BallUiPlugin)
             .add_systems(
-                (ball_movement, lose_velocity, lose_condition).in_set(OnUpdate(GameState::Playing)),
+                (ball_movement, lose_velocity, lose_condition, play_knock_sound).in_set(OnUpdate(GameState::Playing)),
             );
     }
 }
@@ -109,6 +111,29 @@ fn lose_condition(
             || (ball.energy <= 0. && velocity.linvel.length() <= 0.05)
         {
             state.set(GameState::LoadLevel);
+        }
+    }
+}
+
+fn play_knock_sound(
+    ball_query: Query<Entity, With<Ball>>,
+    rapier_context: Res<RapierContext>,
+    audio_assets: Res<AudioAssets>,
+    audio: Res<Audio>,
+) {
+    if let Ok(ball) = ball_query.get_single() {
+        for contact_pair in rapier_context.contacts_with(ball) {
+            for manifold in contact_pair.manifolds() {
+                for contact_point in manifold.points() {
+                    if contact_point.impulse().abs() > 1. {
+                        audio
+                            .play(audio_assets.knock.clone())
+                            .with_playback_rate(0.9 + rand::thread_rng().gen::<f64>() / 5.);
+
+                        return;
+                    }
+                }
+            }
         }
     }
 }
