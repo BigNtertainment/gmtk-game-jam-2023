@@ -7,8 +7,8 @@ use crate::{actions::Actions, hole::Won, loading::AudioAssets, GameState};
 
 use self::ui::BallUiPlugin;
 
-const MAX_BALL_ENERGY: f32 = 500.;
-const BALL_FORCE: f32 = 50.;
+const MAX_BALL_ENERGY: f32 = 90.;
+const BALL_FORCE: f32 = 10.;
 
 mod ui;
 
@@ -133,7 +133,7 @@ fn lose_condition(
 
 fn play_knock_sound(
     ball_query: Query<Entity, With<Ball>>,
-    wall_query: Query<(), With<Wall>>,
+    wall_query: Query<Entity, With<Wall>>,
     wall_mesh_query: Query<&Parent, With<Handle<Mesh>>>,
     rapier_context: Res<RapierContext>,
     audio_assets: Res<AudioAssets>,
@@ -148,6 +148,7 @@ fn play_knock_sound(
             };
 
             // Play the sound only on collision with wall
+            // Doesn't work :(
             if let Ok(parent) = wall_mesh_query.get(other) {
                 if wall_query.get(parent.get()).is_err() {
                     continue;
@@ -161,7 +162,7 @@ fn play_knock_sound(
             for manifold in contact_pair.manifolds() {
                 for contact_point in manifold.points() {
                     println!("{}", contact_point.impulse().abs());
-                    if contact_point.impulse().abs() > 2. {
+                    if contact_point.impulse().abs() > 0.5 {
                         audio
                             .play(audio_assets.knock.clone())
                             .with_playback_rate(0.9 + rand::thread_rng().gen::<f64>() / 5.);
