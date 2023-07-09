@@ -3,8 +3,8 @@ use bevy_rapier3d::prelude::{Collider, ComputedColliderShape, Friction};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
 use crate::{
-    ball::BallBundle, booster::Booster, hole::Hole, loading::ModelAssets, trampoline::Trampoline,
-    util::cleanup, GameState,
+    ball::{BallBundle, Wall}, booster::Booster, hole::Hole, loading::ModelAssets, trampoline::Trampoline,
+    util::cleanup, GameState, club::Club,
 };
 
 pub struct LevelPlugin;
@@ -57,6 +57,12 @@ fn load_level(
                     }
                     Some("trampoline") => {
                         commands.insert(Trampoline::default());
+                    }
+                    Some("club") => {
+                        commands.insert(Club);
+                    }
+                    Some("wall") => {
+                        commands.insert(Wall);
                     }
                     _ => {
                         let mesh = entity.get::<Handle<Mesh>>();

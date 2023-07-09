@@ -16,6 +16,7 @@ impl Plugin for LoadingPlugin {
         .add_collection_to_loading_state::<_, FontAssets>(GameState::Loading)
         .add_collection_to_loading_state::<_, AudioAssets>(GameState::Loading)
         .add_collection_to_loading_state::<_, ModelAssets>(GameState::Loading)
+        .add_collection_to_loading_state::<_, AnimationAssets>(GameState::Loading)
         .add_collection_to_loading_state::<_, TextureAssets>(GameState::Loading);
     }
 }
@@ -52,8 +53,14 @@ pub struct TextureAssets {
 #[derive(AssetCollection, Resource)]
 pub struct ModelAssets {
     #[asset(
-        paths("models/levels/level0.glb#Scene0", "models/levels/level1.glb#Scene0"),
+        paths("models/levels/level_1.glb#Scene0"),
         collection(typed)
     )]
     pub levels: Vec<Handle<Scene>>,
+}
+
+#[derive(AssetCollection, Resource)]
+pub struct AnimationAssets {
+    #[asset(path = "models/club.glb#Animation0")]
+    pub club_hit: Handle<AnimationClip>,
 }

@@ -2,6 +2,7 @@ mod actions;
 mod ball;
 mod booster;
 mod camera;
+mod club;
 mod hole;
 mod level;
 mod light;
@@ -31,6 +32,7 @@ use bevy_rapier3d::{
 };
 use booster::BoosterPlugin;
 use camera::CameraPlugin;
+use club::ClubPlugin;
 use hole::HolePlugin;
 use level::LevelPlugin;
 use light::LightPlugin;
@@ -78,7 +80,8 @@ impl Plugin for GamePlugin {
             .add_plugin(BallPlugin)
             .add_plugin(HolePlugin)
             .add_plugin(BoosterPlugin)
-            .add_plugin(TrampolinePlugin);
+            .add_plugin(TrampolinePlugin)
+            .add_plugin(ClubPlugin);
 
         #[cfg(debug_assertions)]
         {

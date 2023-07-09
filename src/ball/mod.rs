@@ -7,7 +7,8 @@ use crate::{actions::Actions, hole::Won, loading::AudioAssets, GameState};
 
 use self::ui::BallUiPlugin;
 
-const MAX_BALL_ENERGY: f32 = 50.;
+const MAX_BALL_ENERGY: f32 = 500.;
+const BALL_FORCE: f32 = 50.;
 
 mod ui;
 
@@ -34,6 +35,10 @@ impl Plugin for BallPlugin {
 pub struct Ball {
     energy: f32,
 }
+
+#[derive(Component, Reflect, Debug, Default, Clone, Copy)]
+#[reflect(Component)]
+pub struct Wall;
 
 #[derive(Bundle)]
 pub struct BallBundle {
@@ -83,7 +88,7 @@ fn ball_movement(
                 continue;
             }
 
-            let impulse = movement_vector * time.delta_seconds() * 10.;
+            let impulse = movement_vector * time.delta_seconds() * BALL_FORCE;
 
             commands.entity(entity).insert(ExternalImpulse {
                 impulse,
@@ -128,15 +133,35 @@ fn lose_condition(
 
 fn play_knock_sound(
     ball_query: Query<Entity, With<Ball>>,
+    wall_query: Query<(), With<Wall>>,
+    wall_mesh_query: Query<&Parent, With<Handle<Mesh>>>,
     rapier_context: Res<RapierContext>,
     audio_assets: Res<AudioAssets>,
     audio: Res<Audio>,
 ) {
     if let Ok(ball) = ball_query.get_single() {
         for contact_pair in rapier_context.contacts_with(ball) {
+            let other = if contact_pair.collider1() == ball {
+                contact_pair.collider2()
+            } else {
+                contact_pair.collider1()
+            };
+
+            // Play the sound only on collision with wall
+            if let Ok(parent) = wall_mesh_query.get(other) {
+                if wall_query.get(parent.get()).is_err() {
+                    continue;
+                }
+            } else {
+                continue;
+            }
+
+            println!("aaa");
+            
             for manifold in contact_pair.manifolds() {
                 for contact_point in manifold.points() {
-                    if contact_point.impulse().abs() > 1. {
+                    println!("{}", contact_point.impulse().abs());
+                    if contact_point.impulse().abs() > 2. {
                         audio
                             .play(audio_assets.knock.clone())
                             .with_playback_rate(0.9 + rand::thread_rng().gen::<f64>() / 5.);
