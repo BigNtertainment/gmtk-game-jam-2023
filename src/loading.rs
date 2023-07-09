@@ -53,7 +53,7 @@ pub struct TextureAssets {
 #[derive(AssetCollection, Resource)]
 pub struct ModelAssets {
     #[asset(
-        paths("models/levels/level_1.glb#Scene0", "models/levels/level_2.glb#Scene0", "models/levels/level_3.glb#Scene0"),
+        paths("models/levels/level_1.glb#Scene0", "models/levels/level_2.glb#Scene0", "models/levels/level_3.glb#Scene0", "models/levels/level_4.glb#Scene0"),
         collection(typed)
     )]
     pub levels: Vec<Handle<Scene>>,
