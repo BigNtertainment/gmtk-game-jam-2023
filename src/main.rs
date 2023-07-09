@@ -15,7 +15,7 @@ fn main() {
         .insert_resource(ClearColor(Color::rgb(0.1, 0., 0.4)))
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
-                title: "Golf game".to_string(), // TODO: Change the game's title
+                title: "Golf Control".to_string(),
                 resolution: (1280., 720.).into(),
                 canvas: Some("#bevy".to_owned()),
                 ..default()

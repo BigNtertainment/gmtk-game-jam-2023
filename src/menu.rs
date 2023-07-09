@@ -1,5 +1,5 @@
 use crate::level::LevelIndex;
-use crate::loading::FontAssets;
+use crate::loading::{FontAssets, TextureAssets};
 use crate::util::cleanup;
 use crate::GameState;
 use bevy::prelude::*;
@@ -12,10 +12,18 @@ impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<ButtonColors>()
             .add_system(setup_menu.in_schedule(OnEnter(GameState::Menu)))
-            .add_system(click_play_button.in_set(OnUpdate(GameState::Menu)))
-            .add_systems((cleanup_menu, cleanup::<Camera2d>).in_schedule(OnExit(GameState::Menu)));
+            .add_systems((play_button, button_colors).in_set(OnUpdate(GameState::Menu)))
+            .add_systems(
+                (cleanup::<Menu>, cleanup::<Camera2d>).in_schedule(OnExit(GameState::Menu)),
+            );
     }
 }
+
+#[derive(Component, Clone, Copy, Debug)]
+struct Menu;
+
+#[derive(Component, Clone, Copy, Debug)]
+struct PlayButton;
 
 #[derive(Resource)]
 struct ButtonColors {
@@ -35,48 +43,80 @@ impl Default for ButtonColors {
 fn setup_menu(
     mut commands: Commands,
     font_assets: Res<FontAssets>,
+    texture_assets: Res<TextureAssets>,
     button_colors: Res<ButtonColors>,
 ) {
     commands.spawn(Camera2dBundle::default());
     commands
-        .spawn(ButtonBundle {
+        .spawn(NodeBundle {
             style: Style {
-                size: Size::new(Val::Px(120.0), Val::Px(50.0)),
-                margin: UiRect::all(Val::Auto),
+                size: Size::all(Val::Percent(100.)),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
-                ..Default::default()
+                ..default()
             },
-            background_color: button_colors.normal.into(),
-            ..Default::default()
+            background_color: Color::WHITE.into(),
+            ..default()
         })
+        .insert(Menu)
         .with_children(|parent| {
-            parent.spawn(TextBundle::from_section(
-                "Play",
-                TextStyle {
-                    font: font_assets.fira_sans.clone(),
-                    font_size: 40.0,
-                    color: Color::rgb(0.9, 0.9, 0.9),
-                },
-            ));
+            parent
+                .spawn(NodeBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(512.), Val::Auto),
+                        flex_direction: FlexDirection::Column,
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn(ImageBundle {
+                        style: Style {
+                            size: Size::new(Val::Percent(100.), Val::Px(64.)),
+                            margin: UiRect::bottom(Val::Px(128.)),
+                            ..default()
+                        },
+                        image: UiImage::new(texture_assets.logo.clone()),
+                        ..default()
+                    });
+
+                    parent
+                        .spawn(ButtonBundle {
+                            style: Style {
+                                size: Size::new(Val::Percent(32.), Val::Px(48.)),
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..default()
+                            },
+                            background_color: button_colors.normal.into(),
+                            ..default()
+                        })
+                        .insert(PlayButton)
+                        .with_children(|parent| {
+                            parent.spawn(TextBundle::from_section(
+                                "Play",
+                                TextStyle {
+                                    font: font_assets.poppins.clone(),
+                                    font_size: 32.,
+                                    color: Color::WHITE,
+                                },
+                            ));
+                        });
+                });
         });
 }
 
-fn click_play_button(
+fn button_colors(
     button_colors: Res<ButtonColors>,
-    mut state: ResMut<NextState<GameState>>,
     mut interaction_query: Query<
         (&Interaction, &mut BackgroundColor),
         (Changed<Interaction>, With<Button>),
     >,
-    mut level_index: ResMut<LevelIndex>,
 ) {
     for (interaction, mut color) in &mut interaction_query {
         match *interaction {
-            Interaction::Clicked => {
-                level_index.0 = 0;
-                state.set(GameState::LoadLevel);
-            }
+            Interaction::Clicked => {}
             Interaction::Hovered => {
                 *color = button_colors.hovered.into();
             }
@@ -87,6 +127,15 @@ fn click_play_button(
     }
 }
 
-fn cleanup_menu(mut commands: Commands, button: Query<Entity, With<Button>>) {
-    commands.entity(button.single()).despawn_recursive();
+fn play_button(
+    interaction_query: Query<&Interaction, (Changed<Interaction>, With<PlayButton>)>,
+    mut state: ResMut<NextState<GameState>>,
+    mut level_index: ResMut<LevelIndex>,
+) {
+    for interaction in interaction_query.iter() {
+        if *interaction == Interaction::Clicked {
+            level_index.0 = 0;
+            state.set(GameState::LoadLevel);
+        }
+    }
 }
