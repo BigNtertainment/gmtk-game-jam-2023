@@ -4,4 +4,5 @@ A game made for GMTK Game Jam 2023.
 
 ## Credits
  - [plingativator's **jawharp_boing.wav** at freesound.org](https://freesound.org/people/plingativator/sounds/188869/)
- - Poppins font at Google Fonts
+ - [Indian Type Foundry and Jonny Pinhorn's **Poppins** font at Google Fonts](https://fonts.google.com/specimen/Poppins)
+ - [**Wood Fine Dark 004** at Poliigon](https://www.poliigon.com/texture/wood-fine-dark-004/2720)
