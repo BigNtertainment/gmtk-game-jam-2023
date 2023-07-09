@@ -592,22 +592,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_game"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy-inspector-egui",
- "bevy-scene-hook",
- "bevy_asset_loader",
- "bevy_kira_audio",
- "bevy_rapier3d",
- "embed-resource",
- "image",
- "rand",
- "winit",
-]
-
-[[package]]
 name = "bevy_gltf"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1859,6 +1843,22 @@ dependencies = [
  "ab_glyph",
  "approx",
  "xi-unicode",
+]
+
+[[package]]
+name = "golf_control"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy-inspector-egui",
+ "bevy-scene-hook",
+ "bevy_asset_loader",
+ "bevy_kira_audio",
+ "bevy_rapier3d",
+ "embed-resource",
+ "image",
+ "rand",
+ "winit",
 ]
 
 [[package]]

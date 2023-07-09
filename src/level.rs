@@ -3,8 +3,14 @@ use bevy_rapier3d::prelude::{Collider, ComputedColliderShape, Friction};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
 use crate::{
-    ball::{BallBundle, Wall}, booster::Booster, hole::Hole, loading::ModelAssets, trampoline::Trampoline,
-    util::cleanup, GameState, club::Club,
+    ball::{BallBundle, Wall},
+    booster::Booster,
+    club::Club,
+    hole::Hole,
+    loading::ModelAssets,
+    trampoline::Trampoline,
+    util::cleanup,
+    GameState,
 };
 
 pub struct LevelPlugin;
@@ -45,26 +51,34 @@ fn load_level(
                 ..default()
             },
             hook: SceneHook::new(|entity, commands| {
-                match entity.get::<Name>().map(|name| name.as_str()) {
-                    Some("ball") => {
+                match entity.get::<Name>().map(|name| name.as_str()).unwrap_or("") {
+                    "ball" => {
                         commands.insert(BallBundle::default());
                     }
-                    Some("hole") => {
+                    "hole" => {
                         commands.insert(Hole);
                     }
-                    Some("speed") => {
+                    "speed" => {
                         commands.insert(Booster::default());
                     }
-                    Some("trampoline") => {
+                    "trampoline" => {
                         commands.insert(Trampoline::default());
                     }
-                    Some("club") => {
+                    "club" => {
                         commands.insert(Club);
                     }
-                    Some("wall") => {
+                    "wall" => {
                         commands.insert(Wall);
                     }
-                    _ => {
+                    name => {
+                        if name.starts_with("speed") {
+                            commands.insert(Booster::default());
+                        }
+
+                        if name.starts_with("trampoline") {
+                            commands.insert(Trampoline::default());
+                        }
+
                         let mesh = entity.get::<Handle<Mesh>>();
                         let parent = entity.get::<Parent>();
 

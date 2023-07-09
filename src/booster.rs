@@ -20,7 +20,7 @@ pub struct Booster {
 
 impl Default for Booster {
     fn default() -> Self {
-        Self { force: 50. }
+        Self { force: 1000. }
     }
 }
 

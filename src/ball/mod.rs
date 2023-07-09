@@ -7,7 +7,7 @@ use crate::{actions::Actions, hole::Won, loading::AudioAssets, GameState};
 
 use self::ui::BallUiPlugin;
 
-const MAX_BALL_ENERGY: f32 = 90.;
+const MAX_BALL_ENERGY: f32 = 120.;
 const BALL_FORCE: f32 = 10.;
 
 mod ui;
