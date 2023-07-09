@@ -1,5 +1,6 @@
 mod actions;
 mod ball;
+mod booster;
 mod camera;
 mod hole;
 mod level;
@@ -25,6 +26,7 @@ use bevy_rapier3d::{
     prelude::{NoUserData, RapierPhysicsPlugin},
     render::RapierDebugRenderPlugin,
 };
+use booster::BoosterPlugin;
 use camera::CameraPlugin;
 use hole::HolePlugin;
 use level::LevelPlugin;
@@ -64,7 +66,8 @@ impl Plugin for GamePlugin {
             .add_plugin(SoundtrackPlugin)
             .add_plugin(MenuPlugin)
             .add_plugin(BallPlugin)
-            .add_plugin(HolePlugin);
+            .add_plugin(HolePlugin)
+            .add_plugin(BoosterPlugin);
 
         #[cfg(debug_assertions)]
         {

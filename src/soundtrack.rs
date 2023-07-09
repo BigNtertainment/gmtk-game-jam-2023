@@ -12,6 +12,5 @@ impl Plugin for SoundtrackPlugin {
 }
 
 fn play_soundtrack(audio: Res<Audio>, audio_assets: Res<AudioAssets>) {
-	println!("AAAA");
 	audio.play(audio_assets.soundtrack.clone()).looped();
 }
