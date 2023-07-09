@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 
-use crate::{actions::Actions, GameState};
+use crate::{actions::Actions, GameState, hole::Won};
 
 use self::ui::BallUiPlugin;
 
@@ -94,10 +94,14 @@ fn lose_velocity(mut query: Query<&mut Velocity, With<Ball>>, time: Res<Time>) {
     }
 }
 
-fn lose_condition(query: Query<(&Ball, &Velocity, &Transform)>) {
+fn lose_condition(query: Query<(&Ball, &Velocity, &Transform)>, won: Res<Won>, mut state: ResMut<NextState<GameState>>) {
+    if won.0 {
+        return;
+    }
+
     if let Ok((ball, velocity, transform)) = query.get_single() {
-        if transform.translation.y <= -10. || (ball.energy <= 0. && velocity.linvel.length() <= 0.01) {
-            println!("you lose!");
+        if transform.translation.y <= -10. || (ball.energy <= 0. && velocity.linvel.length() <= 0.05) {
+            state.set(GameState::LoadLevel);
         }
     }
 }

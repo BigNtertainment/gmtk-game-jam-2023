@@ -16,7 +16,7 @@ impl Plugin for CameraPlugin {
                     .chain()
                     .in_set(OnUpdate(GameState::Playing)),
             )
-            .add_system(cleanup::<Camera>.in_schedule(OnExit(GameState::Playing)));
+            .add_systems((cleanup::<Camera>, unlock_cursor).in_schedule(OnExit(GameState::Playing)));
     }
 }
 
@@ -30,13 +30,10 @@ struct CameraControls {
 
 fn setup_camera(mut commands: Commands) {
     commands
-        .spawn(Camera3dBundle {
-            transform: Transform::from_xyz(25., 7., 0.).looking_at(Vec3::ZERO, Vec3::Y),
-            ..default()
-        })
+        .spawn(Camera3dBundle::default())
         .insert(CameraControls {
             yaw: 0.,
-            pitch: 0.,
+            pitch: -0.5,
             radius: 27.,
         });
 }
@@ -46,6 +43,13 @@ fn lock_cursor(mut windows: Query<&mut Window>) {
 
     window.cursor.visible = false;
     window.cursor.grab_mode = CursorGrabMode::Locked;
+}
+
+fn unlock_cursor(mut windows: Query<&mut Window>) {
+    let mut window = windows.single_mut();
+
+    window.cursor.visible = true;
+    window.cursor.grab_mode = CursorGrabMode::None;
 }
 
 fn camera_control(mut query: Query<&mut CameraControls>, actions: Res<Actions>, time: Res<Time>) {

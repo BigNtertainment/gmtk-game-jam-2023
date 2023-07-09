@@ -1,3 +1,4 @@
+use crate::level::LevelIndex;
 use crate::loading::FontAssets;
 use crate::util::cleanup;
 use crate::GameState;
@@ -68,11 +69,13 @@ fn click_play_button(
         (&Interaction, &mut BackgroundColor),
         (Changed<Interaction>, With<Button>),
     >,
+    mut level_index: ResMut<LevelIndex>,
 ) {
     for (interaction, mut color) in &mut interaction_query {
         match *interaction {
             Interaction::Clicked => {
-                state.set(GameState::Playing);
+                level_index.0 = 0;
+                state.set(GameState::LoadLevel);
             }
             Interaction::Hovered => {
                 *color = button_colors.hovered.into();

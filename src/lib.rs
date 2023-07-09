@@ -40,6 +40,8 @@ enum GameState {
     Loading,
     // During this State the actual game logic is executed
     Playing,
+    // The level is loaded based on the `LevelIndex` resource
+    LoadLevel,
     // Here the menu is drawn and waiting for player interaction
     Menu,
 }

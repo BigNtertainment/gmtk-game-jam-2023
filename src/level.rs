@@ -2,17 +2,26 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::{Collider, ComputedColliderShape, Friction};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
-use crate::{ball::BallBundle, hole::Hole, loading::ModelAssets, GameState};
+use crate::{ball::BallBundle, hole::Hole, loading::ModelAssets, GameState, util::cleanup};
 
 pub struct LevelPlugin;
 
 impl Plugin for LevelPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugin(HookPlugin)
-            .add_system(load_level.in_schedule(OnEnter(GameState::Playing)))
-            .add_system(update_colliders.in_set(OnUpdate(GameState::Playing)));
+        app.init_resource::<LevelIndex>()
+            .add_plugin(HookPlugin)
+            .add_system(load_level.in_schedule(OnEnter(GameState::LoadLevel)))
+            .add_system(update_colliders.in_set(OnUpdate(GameState::Playing)))
+            .add_system(cleanup::<LevelTag>.in_schedule(OnExit(GameState::Playing)));
     }
 }
+
+#[derive(Resource, Clone, Copy, Debug, Deref, DerefMut, Default)]
+pub struct LevelIndex(pub usize);
+
+#[derive(Component, Reflect, Clone, Copy, Debug, Default)]
+#[reflect(Component)]
+pub struct LevelTag;
 
 #[derive(Component, Clone, Debug)]
 struct UpdateCollider {
@@ -20,11 +29,16 @@ struct UpdateCollider {
     pub parent: Entity,
 }
 
-fn load_level(mut commands: Commands, models: Res<ModelAssets>) {
+fn load_level(
+    mut commands: Commands,
+    models: Res<ModelAssets>,
+    level_index: Res<LevelIndex>,
+    mut state: ResMut<NextState<GameState>>,
+) {
     commands
         .spawn(HookedSceneBundle {
             scene: SceneBundle {
-                scene: models.level.clone(),
+                scene: models.levels[level_index.0].clone(),
                 ..default()
             },
             hook: SceneHook::new(|entity, commands| {
@@ -40,16 +54,21 @@ fn load_level(mut commands: Commands, models: Res<ModelAssets>) {
                         let parent = entity.get::<Parent>();
 
                         if let Some(mesh) = mesh {
-                            commands.insert(UpdateCollider {
-                                mesh: mesh.clone(),
-                                parent: parent.unwrap().get(),
-                            }).insert(Friction::new(1.));
+                            commands
+                                .insert(UpdateCollider {
+                                    mesh: mesh.clone(),
+                                    parent: parent.unwrap().get(),
+                                })
+                                .insert(Friction::new(1.));
                         }
                     }
                 }
             }),
         })
+        .insert(LevelTag)
         .insert(Name::new("level"));
+
+    state.set(GameState::Playing);
 }
 
 fn update_colliders(

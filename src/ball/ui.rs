@@ -18,7 +18,7 @@ impl Plugin for BallUiPlugin {
                     .in_base_set(CoreSet::PostUpdate)
                     .after(UiSystem::Stack),
             )
-            .add_system(cleanup::<BallUi>.in_schedule(OnEnter(GameState::Playing)));
+            .add_system(cleanup::<BallUi>.in_schedule(OnExit(GameState::Playing)));
     }
 }
 

@@ -43,6 +43,6 @@ pub struct TextureAssets {
 
 #[derive(AssetCollection, Resource)]
 pub struct ModelAssets {
-    #[asset(path = "models/level.glb#Scene0")]
-    pub level: Handle<Scene>,
+    #[asset(paths("models/levels/level0.glb#Scene0", "models/levels/level1.glb#Scene0"), collection(typed))]
+    pub levels: Vec<Handle<Scene>>,
 }
