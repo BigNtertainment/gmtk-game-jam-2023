@@ -2,7 +2,10 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::{Collider, ComputedColliderShape, Friction};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
-use crate::{ball::BallBundle, hole::Hole, loading::ModelAssets, util::cleanup, GameState, booster::Booster, trampoline::Trampoline};
+use crate::{
+    ball::BallBundle, booster::Booster, hole::Hole, loading::ModelAssets, trampoline::Trampoline,
+    util::cleanup, GameState,
+};
 
 pub struct LevelPlugin;
 

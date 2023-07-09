@@ -18,7 +18,13 @@ impl Plugin for BallPlugin {
         app.register_type::<Ball>()
             .add_plugin(BallUiPlugin)
             .add_systems(
-                (ball_movement, lose_velocity, lose_condition, play_knock_sound).in_set(OnUpdate(GameState::Playing)),
+                (
+                    ball_movement,
+                    lose_velocity,
+                    lose_condition,
+                    play_knock_sound,
+                )
+                    .in_set(OnUpdate(GameState::Playing)),
             );
     }
 }

@@ -1,46 +1,30 @@
-use crate::level::LevelIndex;
-use crate::loading::{FontAssets, TextureAssets};
-use crate::util::cleanup;
-use crate::GameState;
 use bevy::prelude::*;
 
-pub struct MenuPlugin;
+use crate::{
+    loading::{FontAssets, TextureAssets},
+    menu::{ButtonColors, button_colors},
+    GameState, util::cleanup,
+};
 
-/// This plugin is responsible for the game menu (containing only one button...)
-/// The menu is only drawn during the State `GameState::Menu` and is removed when that state is exited
-impl Plugin for MenuPlugin {
+pub struct WinScreenPlugin;
+
+impl Plugin for WinScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<ButtonColors>()
-            .add_system(setup_menu.in_schedule(OnEnter(GameState::Menu)))
-            .add_systems((play_button, button_colors).in_set(OnUpdate(GameState::Menu)))
+        app.add_system(spawn_win_screen.in_schedule(OnEnter(GameState::Win)))
+            .add_systems((go_to_menu, button_colors).in_set(OnUpdate(GameState::Win)))
             .add_systems(
-                (cleanup::<Menu>, cleanup::<Camera2d>).in_schedule(OnExit(GameState::Menu)),
+                (cleanup::<Camera2d>, cleanup::<WinScreen>).in_schedule(OnExit(GameState::Win)),
             );
     }
 }
 
 #[derive(Component, Clone, Copy, Debug)]
-struct Menu;
+struct WinScreen;
 
 #[derive(Component, Clone, Copy, Debug)]
-struct PlayButton;
+struct GoToMenuButton;
 
-#[derive(Resource)]
-pub struct ButtonColors {
-    pub normal: Color,
-    pub hovered: Color,
-}
-
-impl Default for ButtonColors {
-    fn default() -> Self {
-        ButtonColors {
-            normal: Color::rgb(0.15, 0.15, 0.15),
-            hovered: Color::rgb(0.25, 0.25, 0.25),
-        }
-    }
-}
-
-fn setup_menu(
+fn spawn_win_screen(
     mut commands: Commands,
     font_assets: Res<FontAssets>,
     texture_assets: Res<TextureAssets>,
@@ -58,7 +42,7 @@ fn setup_menu(
             background_color: Color::WHITE.into(),
             ..default()
         })
-        .insert(Menu)
+        .insert(WinScreen)
         .with_children(|parent| {
             parent
                 .spawn(NodeBundle {
@@ -81,6 +65,21 @@ fn setup_menu(
                         ..default()
                     });
 
+                    parent.spawn(
+                        TextBundle::from_section(
+                            "Congratulations! You completed the game.",
+                            TextStyle {
+                                font: font_assets.poppins.clone(),
+                                font_size: 32.,
+                                color: Color::BLACK,
+                            },
+                        )
+                        .with_style(Style {
+                            margin: UiRect::bottom(Val::Px(64.)),
+                            ..default()
+                        }),
+                    );
+
                     parent
                         .spawn(ButtonBundle {
                             style: Style {
@@ -92,10 +91,10 @@ fn setup_menu(
                             background_color: button_colors.normal.into(),
                             ..default()
                         })
-                        .insert(PlayButton)
+                        .insert(GoToMenuButton)
                         .with_children(|parent| {
                             parent.spawn(TextBundle::from_section(
-                                "Play",
+                                "Go to menu",
                                 TextStyle {
                                     font: font_assets.poppins.clone(),
                                     font_size: 32.,
@@ -107,35 +106,13 @@ fn setup_menu(
         });
 }
 
-pub fn button_colors(
-    button_colors: Res<ButtonColors>,
-    mut interaction_query: Query<
-        (&Interaction, &mut BackgroundColor),
-        (Changed<Interaction>, With<Button>),
-    >,
-) {
-    for (interaction, mut color) in &mut interaction_query {
-        match *interaction {
-            Interaction::Clicked => {}
-            Interaction::Hovered => {
-                *color = button_colors.hovered.into();
-            }
-            Interaction::None => {
-                *color = button_colors.normal.into();
-            }
-        }
-    }
-}
-
-fn play_button(
-    interaction_query: Query<&Interaction, (Changed<Interaction>, With<PlayButton>)>,
+fn go_to_menu(
+    interaction_query: Query<&Interaction, (Changed<Interaction>, With<GoToMenuButton>)>,
     mut state: ResMut<NextState<GameState>>,
-    mut level_index: ResMut<LevelIndex>,
 ) {
     for interaction in interaction_query.iter() {
         if *interaction == Interaction::Clicked {
-            level_index.0 = 0;
-            state.set(GameState::LoadLevel);
+            state.set(GameState::Menu);
         }
     }
 }

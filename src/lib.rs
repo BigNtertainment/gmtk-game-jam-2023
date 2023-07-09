@@ -12,6 +12,7 @@ mod reset;
 mod soundtrack;
 mod trampoline;
 mod util;
+mod win_screen;
 
 use crate::actions::ActionsPlugin;
 use crate::loading::LoadingPlugin;
@@ -37,6 +38,7 @@ use loading_screen::LoadingScreenPlugin;
 use reset::ResetPlugin;
 use soundtrack::SoundtrackPlugin;
 use trampoline::TrampolinePlugin;
+use win_screen::WinScreenPlugin;
 
 // This example game uses States to separate logic
 // See https://bevy-cheatbook.github.io/programming/states.html
@@ -52,6 +54,8 @@ enum GameState {
     LoadLevel,
     // Here the menu is drawn and waiting for player interaction
     Menu,
+    // The screen after you complete the game
+    Win,
 }
 
 pub struct GamePlugin;
@@ -69,6 +73,7 @@ impl Plugin for GamePlugin {
             .add_plugin(AudioPlugin)
             .add_plugin(SoundtrackPlugin)
             .add_plugin(MenuPlugin)
+            .add_plugin(WinScreenPlugin)
             .add_plugin(ResetPlugin)
             .add_plugin(BallPlugin)
             .add_plugin(HolePlugin)

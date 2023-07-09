@@ -2,7 +2,12 @@ use bevy::prelude::*;
 use bevy_kira_audio::{Audio, AudioControl};
 use bevy_rapier3d::prelude::*;
 
-use crate::{ball::Ball, level::LevelIndex, loading::{ModelAssets, AudioAssets}, GameState};
+use crate::{
+    ball::Ball,
+    level::LevelIndex,
+    loading::{AudioAssets, ModelAssets},
+    GameState,
+};
 
 pub struct HolePlugin;
 
@@ -39,7 +44,7 @@ fn win_condition(
             level_index.0 += 1;
 
             if level_index.0 >= models.levels.len() {
-                state.set(GameState::Menu);
+                state.set(GameState::Win);
             } else {
                 state.set(GameState::LoadLevel);
             }

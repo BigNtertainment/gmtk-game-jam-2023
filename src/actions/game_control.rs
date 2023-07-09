@@ -23,9 +23,7 @@ impl GameControl {
             GameControl::Right => {
                 keyboard_input.pressed(KeyCode::D) || keyboard_input.pressed(KeyCode::Right)
             }
-            GameControl::Reset => {
-                keyboard_input.just_pressed(KeyCode::R)
-            }
+            GameControl::Reset => keyboard_input.just_pressed(KeyCode::R),
         }
     }
 }
