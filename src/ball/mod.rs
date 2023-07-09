@@ -101,6 +101,8 @@ fn lose_condition(
     query: Query<(&Ball, &Velocity, &Transform)>,
     won: Res<Won>,
     mut state: ResMut<NextState<GameState>>,
+    audio_assets: Res<AudioAssets>,
+    audio: Res<Audio>,
 ) {
     if won.0 {
         return;
@@ -111,6 +113,8 @@ fn lose_condition(
             || (ball.energy <= 0. && velocity.linvel.length() <= 0.05)
         {
             state.set(GameState::LoadLevel);
+
+            audio.play(audio_assets.lose.clone());
         }
     }
 }

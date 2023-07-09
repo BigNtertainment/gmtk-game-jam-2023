@@ -1,7 +1,8 @@
 use bevy::prelude::*;
+use bevy_kira_audio::{Audio, AudioControl};
 use bevy_rapier3d::prelude::*;
 
-use crate::{ball::Ball, level::LevelIndex, loading::ModelAssets, GameState};
+use crate::{ball::Ball, level::LevelIndex, loading::{ModelAssets, AudioAssets}, GameState};
 
 pub struct HolePlugin;
 
@@ -29,7 +30,9 @@ fn win_condition(
     mut level_index: ResMut<LevelIndex>,
     mut state: ResMut<NextState<GameState>>,
     time: Res<Time>,
+    audio: Res<Audio>,
     models: Res<ModelAssets>,
+    audio_assets: Res<AudioAssets>,
 ) {
     if won.0 {
         if timer.tick(time.delta()).just_finished() {
@@ -63,7 +66,9 @@ fn win_condition(
                 if let Ok(parent) = hole_mesh_query.get(other) {
                     if parent.get() == hole {
                         won.0 = true;
-                        *timer = Timer::from_seconds(5., TimerMode::Once);
+                        *timer = Timer::from_seconds(3., TimerMode::Once);
+
+                        audio.play(audio_assets.win.clone());
                     }
                 }
             }
