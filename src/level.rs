@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier3d::prelude::{Collider, ComputedColliderShape, Friction};
 use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
 
-use crate::{ball::BallBundle, hole::Hole, loading::ModelAssets, util::cleanup, GameState, booster::Booster};
+use crate::{ball::BallBundle, hole::Hole, loading::ModelAssets, util::cleanup, GameState, booster::Booster, trampoline::Trampoline};
 
 pub struct LevelPlugin;
 
@@ -51,6 +51,9 @@ fn load_level(
                     }
                     Some("speed") => {
                         commands.insert(Booster::default());
+                    }
+                    Some("trampoline") => {
+                        commands.insert(Trampoline::default());
                     }
                     _ => {
                         let mesh = entity.get::<Handle<Mesh>>();

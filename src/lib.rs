@@ -9,6 +9,7 @@ mod loading;
 mod loading_screen;
 mod menu;
 mod soundtrack;
+mod trampoline;
 mod util;
 
 use crate::actions::ActionsPlugin;
@@ -33,6 +34,7 @@ use level::LevelPlugin;
 use light::LightPlugin;
 use loading_screen::LoadingScreenPlugin;
 use soundtrack::SoundtrackPlugin;
+use trampoline::TrampolinePlugin;
 
 // This example game uses States to separate logic
 // See https://bevy-cheatbook.github.io/programming/states.html
@@ -67,7 +69,8 @@ impl Plugin for GamePlugin {
             .add_plugin(MenuPlugin)
             .add_plugin(BallPlugin)
             .add_plugin(HolePlugin)
-            .add_plugin(BoosterPlugin);
+            .add_plugin(BoosterPlugin)
+            .add_plugin(TrampolinePlugin);
 
         #[cfg(debug_assertions)]
         {

@@ -39,6 +39,8 @@ pub struct AudioAssets {
     pub win: Handle<AudioSource>,
     #[asset(path = "audio/lose.wav")]
     pub lose: Handle<AudioSource>,
+    #[asset(path = "audio/boing.ogg")]
+    pub boing: Handle<AudioSource>,
 }
 
 #[derive(AssetCollection, Resource)]

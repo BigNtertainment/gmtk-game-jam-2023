@@ -94,6 +94,7 @@ fn lose_velocity(mut query: Query<&mut Velocity, With<Ball>>, time: Res<Time>) {
         let deacceleration = 0.5 * time.delta_seconds();
 
         velocity.linvel *= (1. - deacceleration).max(0.);
+        velocity.angvel *= (1. - deacceleration).max(0.);
     }
 }
 
